@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Attendance System</title>
+
+<style>
+*{box-sizing:border-box;font-family:sans-serif}
+body{background:#f1f5f9;margin:0;padding:20px}
+.container{max-width:1200px;margin:auto}
+
+h1{text-align:center;color:#1e3a8a}
+
+.fasal-tabs{
+display:flex;gap:10px;justify-content:center;margin-bottom:20px;flex-wrap:wrap;
+}
+
+.fasal-tab{
+background:white;border:none;padding:10px 20px;border-radius:20px;cursor:pointer;font-weight:bold;
+}
+
+.fasal-tab.active{background:#1e3a8a;color:white;}
+
+.card{
+background:white;padding:20px;border-radius:15px;box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+textarea,input{
+padding:10px;border-radius:10px;border:1px solid #ccc;width:100%;margin-top:10px;
+}
+
+button{
+padding:8px 12px;border:none;border-radius:10px;cursor:pointer;margin-top:5px;
+}
+
+.add{background:#22c55e;color:white}
+.delete-btn{background:#ef4444;color:white}
+.export-all{background:#9333ea;color:white}
+
+.menu{
+display:flex;flex-wrap:wrap;gap:10px;margin:15px 0;
+}
+
+.menu button{background:#1e3a8a;color:white;}
+
+.student-row{
+display:flex;justify-content:space-between;align-items:center;
+background:#f8fafc;padding:10px;border-radius:10px;margin-bottom:10px;
+}
+
+.highlight{
+background:yellow !important;
+transform:scale(1.03);
+}
+
+.name{
+cursor:pointer;
+color:#2563eb;
+font-weight:bold;
+}
+
+.absent{
+color:#ef4444;
+font-weight:bold;
+margin-left:5px;
+}
+
+.date{
+color:#6366f1;
+font-size:12px;
+margin-left:8px;
+}
+
+.attendance-btns button{margin:2px;}
+
+.hadir{background:#d1fae5}
+.hadir.active{background:#10b981;color:white}
+
+.maqan{background:#fee2e2}
+.maqan.active{background:#ef4444;color:white}
+
+.daahay{background:#ffedd5}
+.daahay.active{background:#f59e0b;color:white}
+
+.summary{
+margin-top:20px;padding:10px;background:#eef2ff;border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h1>Attendance System (1-4)</h1>
+
+<div class="fasal-tabs">
+<button class="fasal-tab" data-f="1">Class 1</button>
+<button class="fasal-tab" data-f="2">Class 2</button>
+<button class="fasal-tab" data-f="3">Class 3</button>
+<button class="fasal-tab" data-f="4">Class 4</button>
+</div>
+
+<div class="card">
+
+<input id="name" placeholder="Student name">
+<button class="add" onclick="addStudent()">➕ Add</button>
+
+<textarea id="bulkNames" placeholder="Add many (comma or new line)"></textarea>
+<button class="add" onclick="addBulkStudents()">📥 Add All</button>
+
+<div class="menu">
+<button onclick="render()">📋 Show</button>
+<button onclick="searchStudent()">🔍 Search</button>
+<button onclick="exportCSV()">📁 Export Class</button>
+<button class="export-all" onclick="exportAll()">📦 Export All</button>
+</div>
+
+<div id="list"></div>
+<div class="summary" id="summary"></div>
+
+</div>
+</div>
+
+<script>
+
+let current=1
+let students={1:[],2:[],3:[],4:[]}
+let attendance={1:{},2:{},3:{},4:{}}
+
+function save(){
+localStorage.setItem("att",JSON.stringify({students,attendance}))
+}
+
+function load(){
+let d=localStorage.getItem("att")
+if(d){
+let data=JSON.parse(d)
+students=data.students||students
+attendance=data.attendance||attendance
+}
+}
+
+function formatName(name){
+name=name.toLowerCase()
+return name.charAt(0).toUpperCase()+name.slice(1)
+}
+
+function getToday(){
+let d=new Date()
+let day=d.toLocaleDateString('en-US',{weekday:'short'})
+let date=d.toLocaleDateString()
+return day+" "+date
+}
+
+function setFasal(f){
+current=f
+document.querySelectorAll(".fasal-tab").forEach(b=>{
+b.classList.toggle("active",b.dataset.f==f)
+})
+render()
+}
+
+function addStudent(){
+let name=document.getElementById("name").value.trim()
+if(!name)return
+
+name=formatName(name)
+
+if(students[current].includes(name)) return
+
+students[current].push(name)
+attendance[current][name]="hadir"
+
+document.getElementById("name").value=""
+save()
+render()
+}
+
+function addBulkStudents(){
+let text=document.getElementById("bulkNames").value.trim()
+if(!text)return
+
+let names=text.split(/[\n,]+/)
+
+names.forEach(name=>{
+name=name.trim()
+if(name){
+name=formatName(name)
+if(!students[current].includes(name)){
+students[current].push(name)
+attendance[current][name]="hadir"
+}
+}
+})
+
+document.getElementById("bulkNames").value=""
+save()
+render()
+}
+
+function setStatus(i,s){
+let name=students[current][i]
+attendance[current][name]=s
+save()
+render()
+}
+
+function deleteStudent(i){
+let name=students[current][i]
+
+students[current].splice(i,1)
+delete attendance[current][name]
+
+save()
+render()
+}
+
+function searchStudent(){
+let name=prompt("Search student:")
+if(!name)return
+
+name=name.toLowerCase()
+
+let index=students[current].findIndex(s=>s.toLowerCase().includes(name))
+if(index===-1) return alert("Not found")
+
+render()
+
+let rows=document.querySelectorAll(".student-row")
+let target=rows[index]
+
+target.classList.add("highlight")
+target.scrollIntoView({behavior:"smooth",block:"center"})
+
+setTimeout(()=>target.classList.remove("highlight"),3000)
+}
+
+function exportCSV(){
+let rows=[["Name","Status"]]
+
+students[current].forEach(name=>{
+let st=attendance[current][name]||"hadir"
+rows.push([name,st])
+})
+
+let csv=rows.map(r=>r.join(",")).join("\n")
+
+let today=new Date().toISOString().slice(0,10)
+let file=`class_${current}_${today}.csv`
+
+let blob=new Blob([csv])
+let a=document.createElement("a")
+a.href=URL.createObjectURL(blob)
+a.download=file
+a.click()
+}
+
+function exportAll(){
+let today=new Date().toISOString().slice(0,10)
+
+for(let f=1;f<=4;f++){
+let rows=[["Name","Status"]]
+
+students[f].forEach(name=>{
+let st=attendance[f][name]||"hadir"
+rows.push([name,st])
+})
+
+let csv=rows.map(r=>r.join(",")).join("\n")
+
+let blob=new Blob([csv])
+let a=document.createElement("a")
+a.href=URL.createObjectURL(blob)
+a.download=`class_${f}_${today}.csv`
+a.click()
+}
+}
+
+function render(){
+let list=document.getElementById("list")
+list.innerHTML=""
+
+let hadir=0,maqan=0,daahay=0
+let today=getToday()
+
+students[current].forEach((name,i)=>{
+let st=attendance[current][name]||"hadir"
+
+if(st=="hadir")hadir++
+if(st=="maqan")maqan++
+if(st=="daahay")daahay++
+
+list.innerHTML+=`
+<div class="student-row">
+<span class="name" onclick="deleteStudent(${i})">
+${name}
+${st=="maqan" ? `<span class="absent">(Absent)</span><span class="date">${today}</span>` : ''}
+</span>
+
+<div class="attendance-btns">
+<button class="hadir ${st=="hadir"?"active":""}" onclick="setStatus(${i},'hadir')">✔️</button>
+<button class="maqan ${st=="maqan"?"active":""}" onclick="setStatus(${i},'maqan')">❌</button>
+<button class="daahay ${st=="daahay"?"active":""}" onclick="setStatus(${i},'daahay')">⏰</button>
+</div>
+
+<button class="delete-btn" onclick="deleteStudent(${i})">🗑</button>
+</div>
+`
+})
+
+let total=students[current].length
+let percent= total? Math.round((hadir/total)*100):0
+
+document.getElementById("summary").innerText=
+`Present:${hadir} | Absent:${maqan} | Late:${daahay} | ${percent}%`
+}
+
+document.querySelectorAll(".fasal-tab").forEach(b=>{
+b.onclick=()=>setFasal(b.dataset.f)
+})
+
+load()
+setFasal(1)
+
+</script>
+
+</body>
+</html>
