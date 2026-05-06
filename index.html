@@ -1,327 +1,322 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="so">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Attendance System</title>
+<title>Dugsiga Iftiin Attendance</title>
 
 <style>
 *{box-sizing:border-box;font-family:sans-serif}
-body{background:#f1f5f9;margin:0;padding:20px}
-.container{max-width:1200px;margin:auto}
+body{background:#0f172a;color:#e5e7eb;margin:0;padding:20px}
 
-h1{text-align:center;color:#1e3a8a}
-
-.fasal-tabs{
-display:flex;gap:10px;justify-content:center;margin-bottom:20px;flex-wrap:wrap;
+/* login */
+#login{display:flex;justify-content:center;align-items:center;height:100vh}
+.login-box{
+background:#1e293b;padding:30px;border-radius:15px;text-align:center;width:300px;
+}
+.login-box input{
+width:100%;padding:10px;margin-top:10px;border:none;border-radius:10px;background:#0f172a;color:white;
+}
+.login-box button{
+margin-top:10px;padding:10px;width:100%;background:#22c55e;color:white;border:none;border-radius:10px;
 }
 
-.fasal-tab{
-background:white;border:none;padding:10px 20px;border-radius:20px;cursor:pointer;font-weight:bold;
+.container{max-width:1000px;margin:auto;display:none}
+
+.header{text-align:center;margin-bottom:20px}
+.header h1{color:#38bdf8}
+
+.logout{
+position:absolute;top:20px;right:20px;
+background:#ef4444;color:white;padding:8px;border:none;border-radius:10px;
 }
 
-.fasal-tab.active{background:#1e3a8a;color:white;}
+/* classes */
+.c1{background:#1e293b}
+.c2{background:#1f3d2b}
+.c3{background:#3f3a1a}
+.c4{background:#3b1f1f}
+.c5{background:#2e1065}
 
-.card{
-background:white;padding:20px;border-radius:15px;box-shadow:0 5px 15px rgba(0,0,0,0.1);
+.tabs{display:flex;gap:10px;justify-content:center;margin-bottom:15px;flex-wrap:wrap;}
+.tabs button{padding:10px;border:none;border-radius:20px;background:#1e293b;color:white;cursor:pointer;}
+.active{outline:2px solid #38bdf8}
+
+.card{padding:20px;border-radius:15px}
+
+input,textarea{
+width:100%;padding:10px;margin-top:10px;border-radius:10px;border:none;background:#1e293b;color:white;
 }
 
-textarea,input{
-padding:10px;border-radius:10px;border:1px solid #ccc;width:100%;margin-top:10px;
+button{margin-top:5px;padding:10px;border:none;border-radius:10px;cursor:pointer;}
+.add-btn{width:100%;background:#22c55e;color:white}
+.report-btn{background:#6366f1;color:white;width:100%}
+.delete-btn{background:#ef4444;color:white;padding:5px 10px;border-radius:8px}
+
+.student{
+display:flex;justify-content:space-between;background:#1e293b;
+padding:10px;margin-top:10px;border-radius:10px;
 }
 
-button{
-padding:8px 12px;border:none;border-radius:10px;cursor:pointer;margin-top:5px;
+.absent{color:#f87171}
+
+/* modal */
+.modal{
+display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+background:rgba(0,0,0,0.7);justify-content:center;align-items:center;
 }
-
-.add{background:#22c55e;color:white}
-.delete-btn{background:#ef4444;color:white}
-.export-all{background:#9333ea;color:white}
-
-.menu{
-display:flex;flex-wrap:wrap;gap:10px;margin:15px 0;
-}
-
-.menu button{background:#1e3a8a;color:white;}
-
-.student-row{
-display:flex;justify-content:space-between;align-items:center;
-background:#f8fafc;padding:10px;border-radius:10px;margin-bottom:10px;
-}
-
-.highlight{
-background:yellow !important;
-transform:scale(1.03);
-}
-
-.name{
-cursor:pointer;
-color:#2563eb;
-font-weight:bold;
-}
-
-.absent{
-color:#ef4444;
-font-weight:bold;
-margin-left:5px;
-}
-
-.date{
-color:#6366f1;
-font-size:12px;
-margin-left:8px;
-}
-
-.attendance-btns button{margin:2px;}
-
-.hadir{background:#d1fae5}
-.hadir.active{background:#10b981;color:white}
-
-.maqan{background:#fee2e2}
-.maqan.active{background:#ef4444;color:white}
-
-.daahay{background:#ffedd5}
-.daahay.active{background:#f59e0b;color:white}
-
-.summary{
-margin-top:20px;padding:10px;background:#eef2ff;border-radius:10px;
+.modal-box{
+background:#1e293b;padding:20px;border-radius:15px;width:90%;max-width:500px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
-<h1>Attendance System (1-4)</h1>
-
-<div class="fasal-tabs">
-<button class="fasal-tab" data-f="1">Class 1</button>
-<button class="fasal-tab" data-f="2">Class 2</button>
-<button class="fasal-tab" data-f="3">Class 3</button>
-<button class="fasal-tab" data-f="4">Class 4</button>
+<!-- LOGIN -->
+<div id="login">
+<div class="login-box">
+<h2>Login</h2>
+<input type="password" id="pass" placeholder="Password">
+<button onclick="login()">Gal</button>
+<p id="error" style="color:red"></p>
+</div>
 </div>
 
-<div class="card">
+<!-- APP -->
+<div class="container" id="app">
 
-<input id="name" placeholder="Student name">
-<button class="add" onclick="addStudent()">➕ Add</button>
+<button class="logout" onclick="logout()">Logout</button>
 
-<textarea id="bulkNames" placeholder="Add many (comma or new line)"></textarea>
-<button class="add" onclick="addBulkStudents()">📥 Add All</button>
-
-<div class="menu">
-<button onclick="render()">📋 Show</button>
-<button onclick="searchStudent()">🔍 Search</button>
-<button onclick="exportCSV()">📁 Export Class</button>
-<button class="export-all" onclick="exportAll()">📦 Export All</button>
+<div class="header">
+<h1>Dugsiga Iftiin Attendance</h1>
 </div>
+
+<div class="tabs">
+<button onclick="setClass(1)">Fasal 1</button>
+<button onclick="setClass(2)">Fasal 2</button>
+<button onclick="setClass(3)">Fasal 3</button>
+<button onclick="setClass(4)">Fasal 4</button>
+<button onclick="setClass(5)">Fasal 5</button>
+</div>
+
+<!-- 📅 التاريخ -->
+<input type="date" id="date" onchange="render()">
+
+<div id="card" class="card c1">
+
+<input id="name" placeholder="Magaca ardayga">
+<button class="add-btn" onclick="addStudent()">Ku dar arday</button>
+
+<input id="lesson" placeholder="📚 Xiisadda">
+
+<textarea id="bulk" placeholder="Ku dar arday badan"></textarea>
+<button class="add-btn" onclick="addBulk()">Ku dar dhammaan</button>
+
+<button class="report-btn" onclick="dailyReport()">📊 Warbixin Maalinle</button>
+
+<input id="search" placeholder="Raadi..." oninput="render()">
 
 <div id="list"></div>
-<div class="summary" id="summary"></div>
 
+</div>
+</div>
+
+<!-- REPORT -->
+<div class="modal" id="modal">
+<div class="modal-box">
+<h3>Warbixin Maalinle</h3>
+<div id="report"></div>
+<button onclick="closeModal()" class="delete-btn">Xir</button>
 </div>
 </div>
 
 <script>
 
-let current=1
-let students={1:[],2:[],3:[],4:[]}
-let attendance={1:{},2:{},3:{},4:{}}
+/* 🔐 PASSWORD */
+const PASSWORD="dugsigaiftiin"
 
-function save(){
-localStorage.setItem("att",JSON.stringify({students,attendance}))
+function checkLogin(){
+if(localStorage.getItem("login")==="true"){
+loginHide()
+}else{
+loginShow()
+}
+}
+
+function loginShow(){
+document.getElementById("login").style.display="flex"
+document.getElementById("app").style.display="none"
+}
+
+function loginHide(){
+document.getElementById("login").style.display="none"
+document.getElementById("app").style.display="block"
+}
+
+function login(){
+let p=document.getElementById("pass").value
+if(p===PASSWORD){
+localStorage.setItem("login","true")
+loginHide()
+}else{
+document.getElementById("error").innerText="Password qaldan"
+}
+}
+
+function logout(){
+localStorage.removeItem("login")
+loginShow()
+}
+
+/* DATA */
+let current=1
+let students={1:[],2:[],3:[],4:[],5:[]}
+let attendance={1:{},2:{},3:{},4:{},5:{}}
+
+function getDate(){
+return document.getElementById("date").value || new Date().toISOString().slice(0,10)
+}
+
+/* fix */
+function fixData(data, template){
+for(let i=1;i<=5;i++){
+if(!data[i]) data[i]=JSON.parse(JSON.stringify(template[i]))
+}
+return data
 }
 
 function load(){
-let d=localStorage.getItem("att")
+let d=localStorage.getItem("sys")
 if(d){
 let data=JSON.parse(d)
-students=data.students||students
-attendance=data.attendance||attendance
+students=fixData(data.students||{},students)
+attendance=fixData(data.attendance||{},attendance)
 }
 }
 
-function formatName(name){
-name=name.toLowerCase()
-return name.charAt(0).toUpperCase()+name.slice(1)
+function save(){
+localStorage.setItem("sys",JSON.stringify({students,attendance}))
 }
 
-function getToday(){
-let d=new Date()
-let day=d.toLocaleDateString('en-US',{weekday:'short'})
-let date=d.toLocaleDateString()
-return day+" "+date
-}
+/* class */
+function setClass(c){
+current=c
+document.getElementById("card").className="card c"+c
 
-function setFasal(f){
-current=f
-document.querySelectorAll(".fasal-tab").forEach(b=>{
-b.classList.toggle("active",b.dataset.f==f)
+document.querySelectorAll(".tabs button").forEach((b,i)=>{
+b.classList.toggle("active",i===c-1)
 })
+
 render()
 }
 
+/* add */
 function addStudent(){
-let name=document.getElementById("name").value.trim()
-if(!name)return
+let n=document.getElementById("name").value.trim()
+if(!n)return
+if(students[current].includes(n)) return
 
-name=formatName(name)
-
-if(students[current].includes(name)) return
-
-students[current].push(name)
-attendance[current][name]="hadir"
-
+students[current].push(n)
 document.getElementById("name").value=""
-save()
-render()
+save();render()
 }
 
-function addBulkStudents(){
-let text=document.getElementById("bulkNames").value.trim()
-if(!text)return
-
-let names=text.split(/[\n,]+/)
-
-names.forEach(name=>{
-name=name.trim()
-if(name){
-name=formatName(name)
-if(!students[current].includes(name)){
-students[current].push(name)
-attendance[current][name]="hadir"
-}
+function addBulk(){
+let arr=document.getElementById("bulk").value.split(/[\n,]+/)
+arr.forEach(n=>{
+n=n.trim()
+if(n && !students[current].includes(n)){
+students[current].push(n)
 }
 })
-
-document.getElementById("bulkNames").value=""
-save()
-render()
+document.getElementById("bulk").value=""
+save();render()
 }
 
-function setStatus(i,s){
-let name=students[current][i]
-attendance[current][name]=s
-save()
-render()
-}
-
-function deleteStudent(i){
-let name=students[current][i]
+/* delete */
+function del(i){
+let n=students[current][i]
+if(!confirm("Hubi tirtirid?")) return
+if(prompt("Qor DELETE")!=="DELETE") return
 
 students[current].splice(i,1)
-delete attendance[current][name]
+delete attendance[current][n]
 
-save()
-render()
+save();render()
 }
 
-function searchStudent(){
-let name=prompt("Search student:")
-if(!name)return
+/* attendance */
+function toggle(i){
+let n=students[current][i]
+let d=getDate()
+let lesson=document.getElementById("lesson").value || "—"
 
-name=name.toLowerCase()
+if(!attendance[current][n]) attendance[current][n]={}
+attendance[current][n][d]=[{lesson}]
 
-let index=students[current].findIndex(s=>s.toLowerCase().includes(name))
-if(index===-1) return alert("Not found")
-
-render()
-
-let rows=document.querySelectorAll(".student-row")
-let target=rows[index]
-
-target.classList.add("highlight")
-target.scrollIntoView({behavior:"smooth",block:"center"})
-
-setTimeout(()=>target.classList.remove("highlight"),3000)
+save();render()
 }
 
-function exportCSV(){
-let rows=[["Name","Status"]]
-
-students[current].forEach(name=>{
-let st=attendance[current][name]||"hadir"
-rows.push([name,st])
-})
-
-let csv=rows.map(r=>r.join(",")).join("\n")
-
-let today=new Date().toISOString().slice(0,10)
-let file=`class_${current}_${today}.csv`
-
-let blob=new Blob([csv])
-let a=document.createElement("a")
-a.href=URL.createObjectURL(blob)
-a.download=file
-a.click()
-}
-
-function exportAll(){
-let today=new Date().toISOString().slice(0,10)
-
-for(let f=1;f<=4;f++){
-let rows=[["Name","Status"]]
-
-students[f].forEach(name=>{
-let st=attendance[f][name]||"hadir"
-rows.push([name,st])
-})
-
-let csv=rows.map(r=>r.join(",")).join("\n")
-
-let blob=new Blob([csv])
-let a=document.createElement("a")
-a.href=URL.createObjectURL(blob)
-a.download=`class_${f}_${today}.csv`
-a.click()
-}
-}
-
+/* render */
 function render(){
-let list=document.getElementById("list")
-list.innerHTML=""
+let box=document.getElementById("list")
+box.innerHTML=""
 
-let hadir=0,maqan=0,daahay=0
-let today=getToday()
+let search=document.getElementById("search").value.toLowerCase()
+let d=getDate()
 
-students[current].forEach((name,i)=>{
-let st=attendance[current][name]||"hadir"
+students[current].forEach((n,i)=>{
+let match=n.toLowerCase().includes(search)
+if(search && !match) return
 
-if(st=="hadir")hadir++
-if(st=="maqan")maqan++
-if(st=="daahay")daahay++
+let day=(attendance[current][n]||{})[d]
 
-list.innerHTML+=`
-<div class="student-row">
-<span class="name" onclick="deleteStudent(${i})">
-${name}
-${st=="maqan" ? `<span class="absent">(Absent)</span><span class="date">${today}</span>` : ''}
+box.innerHTML+=`
+<div class="student">
+<span>
+<b>${n}</b><br>
+${day?`<span class="absent">Maqan (${day.map(x=>x.lesson)})</span>`:""}
 </span>
 
-<div class="attendance-btns">
-<button class="hadir ${st=="hadir"?"active":""}" onclick="setStatus(${i},'hadir')">✔️</button>
-<button class="maqan ${st=="maqan"?"active":""}" onclick="setStatus(${i},'maqan')">❌</button>
-<button class="daahay ${st=="daahay"?"active":""}" onclick="setStatus(${i},'daahay')">⏰</button>
+<div>
+<input type="checkbox" ${day?"checked":""} onclick="toggle(${i})">
+<button class="delete-btn" onclick="del(${i})">Delete</button>
 </div>
-
-<button class="delete-btn" onclick="deleteStudent(${i})">🗑</button>
 </div>
 `
 })
-
-let total=students[current].length
-let percent= total? Math.round((hadir/total)*100):0
-
-document.getElementById("summary").innerText=
-`Present:${hadir} | Absent:${maqan} | Late:${daahay} | ${percent}%`
 }
 
-document.querySelectorAll(".fasal-tab").forEach(b=>{
-b.onclick=()=>setFasal(b.dataset.f)
+/* 📊 report */
+function dailyReport(){
+let d=getDate()
+let html=""
+
+for(let c=1;c<=5;c++){
+let count=0
+
+students[c].forEach(n=>{
+let day=(attendance[c][n]||{})[d]
+if(day) count++
 })
 
+html+=`<b>Fasal ${c}</b><br>Tirada maqan: ${count}<hr>`
+}
+
+document.getElementById("report").innerHTML=html
+document.getElementById("modal").style.display="flex"
+}
+
+function closeModal(){
+document.getElementById("modal").style.display="none"
+}
+
+/* init */
 load()
-setFasal(1)
+checkLogin()
+document.getElementById("date").value=new Date().toISOString().slice(0,10)
+setClass(1)
 
 </script>
 
