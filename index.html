@@ -3,231 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dukaanka Quruxda & Daryeelka</title>
+    <title>MILGO LABORATORIES | Daryeelka Quruxda</title>
+    <!-- استخدام خطوط عالمية أنيقة -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #111; /* أسود كلاسيكي */
+            --secondary: #fff; /* أبيض نقي */
+            --accent: #d4af37; /* لمسة ذهبية تعكس الفخامة */
+            --bg-color: #faf9f6; /* لون خلفية مريح للعين */
+        }
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Montserrat', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #faf3f5;
+            background-color: var(--bg-color);
+            color: var(--primary);
         }
+        
+        /* شريط التنقل (Header) */
         header {
-            background-color: #d81b60;
-            color: white;
-            padding: 1rem 2rem;
+            background-color: var(--secondary);
+            padding: 20px 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        header h1 {
-            margin: 0;
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-decoration: none;
+            color: var(--primary);
         }
-        .cart-info {
-            font-size: 1.2rem;
-            font-weight: bold;
+        .logo span {
+            display: block;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            letter-spacing: 4px;
+            font-weight: 300;
+            text-align: center;
         }
-        .container {
-            display: flex;
-            padding: 2rem;
-            gap: 2rem;
+        nav a {
+            margin-left: 30px;
+            text-decoration: none;
+            color: var(--primary);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
         }
-        .products {
-            flex: 3;
+        nav a:hover { color: var(--accent); }
+        
+        /* القسم الترحيبي (Hero Section) */
+        .hero {
+            text-align: center;
+            padding: 120px 20px;
+            background-color: #ece8e1;
+            background-image: linear-gradient(rgba(236, 232, 225, 0.9), rgba(236, 232, 225, 0.9));
+        }
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        .hero p {
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto 40px auto;
+            line-height: 1.8;
+            color: #555;
+        }
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--secondary);
+            padding: 15px 35px;
+            text-decoration: none;
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: 1px solid var(--primary);
+            transition: all 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: transparent;
+            color: var(--primary);
+        }
+
+        /* قسم المنتجات */
+        .products-section {
+            padding: 80px 5%;
+            max-width: 1200px;
+            margin: auto;
+        }
+        .section-title {
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            margin-bottom: 60px;
+        }
+        .product-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
         }
         .product-card {
             background: white;
-            padding: 1rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 25px;
             text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+            transition: transform 0.3s, box-shadow 0.3s;
         }
-        .product-card img {
-            max-width: 100%;
-            height: 150px;
-            object-fit: cover;
-            border-bottom: 1px solid #ddd;
-            margin-bottom: 1rem;
-            border-radius: 5px;
+        .product-card:hover { 
+            transform: translateY(-10px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
         }
-        .btn {
-            background-color: #d81b60;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
+        .product-img {
             width: 100%;
-            font-size: 1rem;
-            margin-top: 5px;
+            height: 280px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
         }
-        .btn:hover {
-            background-color: #ad1457;
+        .product-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--primary);
+        }
+        .product-price {
+            color: var(--accent);
+            font-size: 18px;
+            margin-bottom: 25px;
+            font-weight: 600;
         }
         .whatsapp-btn {
-            background-color: #25d366;
-            text-decoration: none;
             display: inline-block;
-            text-align: center;
-            padding: 10px 15px;
-            border-radius: 5px;
+            background-color: #25D366;
             color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            border-radius: 5px;
             font-weight: bold;
-            width: calc(100% - 30px);
-            margin-top: 15px;
+            width: 100%;
+            box-sizing: border-box;
+            transition: background 0.3s;
         }
-        .whatsapp-btn:hover {
-            background-color: #1ebe5d;
-        }
-        .sidebar {
-            flex: 1;
-            background: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            height: fit-content;
-        }
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 5px;
-        }
-        .total {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-top: 1rem;
-            text-align: right;
-        }
-        .checkout-btn {
-            background-color: #2ecc71;
-            margin-top: 15px;
-        }
-        .checkout-btn:hover {
-            background-color: #27ae60;
+        .whatsapp-btn:hover { background-color: #1ebe56; }
+        
+        /* الفوتر (الأسفل) */
+        footer {
+            background-color: var(--primary);
+            color: var(--secondary);
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 14px;
+            letter-spacing: 1px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Madaxa Bogga -->
+    <!-- الترويسة والروابط -->
     <header>
-        <h1>Dukaanka Quruxda</h1>
-        <div class="cart-info">
-            Gaariga: <span id="cart-count">0</span>
-        </div>
+        <a href="#" class="logo">MILGO <span>LABORATORIES</span></a>
+        <nav>
+            <a href="#">Bogga Hore</a> <!-- الرئيسية -->
+            <a href="#products">Alaabta</a> <!-- المنتجات -->
+            <a href="#">Nagu Saabsan</a> <!-- من نحن -->
+            <a href="#">Xiriirka</a> <!-- اتصل بنا -->
+        </nav>
     </header>
 
-    <!-- Qaybta Weyn -->
-    <div class="container">
-        
-        <!-- Liiska Alaabta (Quruxda, Saliidaha & Shaambooyada) -->
-        <div class="products" id="products-list">
-            <!-- Halkan waxaa ka muuqan doona alaabta -->
+    <!-- الواجهة الترحيبية -->
+    <section class="hero">
+        <h1>Quruxdaada Dabiiciga ah</h1>
+        <p>Kareemada, shaambooyinka iyo saliidaha ugu tayada sarreeya ee daryeelka maqaarka iyo timaha. Soo ogow sirta quruxda dabiiciga ah.</p>
+        <a href="#products" class="btn-primary">Dalbo Hadda</a>
+    </section>
+
+    <!-- عرض المنتجات -->
+    <section id="products" class="products-section">
+        <h2 class="section-title">Alaabtayada Ugu Wanaagsan</h2>
+        <div class="product-grid" id="customer-products">
+            <!-- المنتجات ستظهر هنا تلقائياً عبر الجافاسكريبت من لوحة التحكم -->
         </div>
+    </section>
 
-        <!-- Qaybta Gaariga Iibsiga & WhatsApp-ka -->
-        <div class="sidebar">
-            <h2>Gaariga Iibsiga</h2>
-            <div id="cart-items">
-                <p>Gaarigaaga waa eber.</p>
-            </div>
-            <div class="total">
-                Wadarta: $<span id="cart-total">0.00</span>
-            </div>
-            <button class="btn checkout-btn" onclick="checkout()">Iibso Hadda</button>
-            
-            <!-- Badhanka WhatsApp -->
-            <a href="https://wa.me/252689059804?text=Asc,%20waxaan%20rabaa%20inaan%20faahfaahin%20ka%20helno%20alaabtaada." class="whatsapp-btn" target="_blank">
-                💬 Nagala soo xiriir WhatsApp
-            </a>
-        </div>
+    <!-- الفوتر -->
+    <footer>
+        &copy; 2026 MILGO LABORATORIES. Xuquuqda oo dhan way dhowran yihiin.
+    </footer>
 
-    </div>
-
-    <!-- JavaScript-ka Shaqeynaya Dukaanka -->
+    <!-- سكربت جلب المنتجات -->
     <script>
-        // Xogta Alaabta (Quruxda, Saliidaha iyo Shaambooyada)
-        const products = [
-            { id: 1, name: "Shaambo Dabiici ah", price: 12.00, img: "https://via.placeholder.com/150?text=Shampoo" },
-            { id: 2, name: "Saliid Timaha (Timir)", price: 18.00, img: "https://via.placeholder.com/150?text=Hair+Oil" },
-            { id: 3, name: "Saliid Qumbaha Asal ah", price: 15.00, img: "https://via.placeholder.com/150?text=Coconut+Oil" },
-            { id: 4, name: "Kariimka Wajiga (Qurux)", price: 22.00, img: "https://via.placeholder.com/150?text=Face+Cream" },
-            { id: 5, name: "Shaambo Qoyan oo Jilicsan", price: 10.00, img: "https://via.placeholder.com/150?text=Liquid+Shampoo" },
-            { id: 6, name: "Saliid Argan", price: 25.00, img: "https://via.placeholder.com/150?text=Argan+Oil" }
-        ];
-
-        let cart = [];
-
-        // Dhaqdhaqaaqa soo bandhigida alaabta
-        function renderProducts() {
-            const productsList = document.getElementById('products-list');
-            productsList.innerHTML = '';
+        function displayProducts() {
+            // جلب البيانات التي تمت إضافتها من صفحة الأدمن
+            const products = JSON.parse(localStorage.getItem('milgo_products')) || [];
+            const container = document.getElementById('customer-products');
             
-            products.forEach(product => {
-                const productDiv = document.createElement('div');
-                productDiv.className = 'product-card';
-                productDiv.innerHTML = `
-                    <img src="${product.img}" alt="${product.name}">
-                    <h3>${product.name}</h3>
-                    <p>$${product.price.toFixed(2)}</p>
-                    <button class="btn" onclick="addToCart(${product.id})">Ku dar gaariga</button> 
+            if(products.length === 0) {
+                container.innerHTML = '<p style="text-align:center; width:100%; grid-column: 1 / -1; color:#777;">Wali wax alaab ah laguma darin dukaanka.</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            products.forEach(p => {
+                const finalPrice = p.discount ? p.discount : p.price;
+                const priceHtml = p.discount 
+                    ? `<span style="text-decoration:line-through; color:#999; margin-right:10px; font-size:14px;">$${p.price}</span> $${p.discount}` 
+                    : `$${p.price}`;
+
+                // تجهيز رسالة الواتساب بالصومالية
+                const waMessage = encodeURIComponent(`Salaamu calaykum, waxaan rabaa inaan dalbado: ${p.name} oo qiimaheedu yahay $${finalPrice}.`);
+                
+                container.innerHTML += `
+                    <div class="product-card">
+                        <img src="${p.img || 'https://via.placeholder.com/300x300?text=MILGO'}" alt="${p.name}" class="product-img">
+                        <div class="product-title">${p.name}</div>
+                        <div class="product-price">${priceHtml}</div>
+                        <a href="https://wa.me/252689059804?text=${waMessage}" class="whatsapp-btn" target="_blank">📲 Ka Dalbo WhatsApp</a>
+                    </div>
                 `;
-                productsList.appendChild(productDiv);
             });
         }
 
-        // Ku darida alaabta gaariga
-        function addToCart(productId) {
-            const product = products.find(p => p.id === productId);
-            cart.push(product);
-            updateCart();
-        }
-
-        // Cusboonaysiinta gaariga
-        function updateCart() {
-            const cartItems = document.getElementById('cart-items');
-            const cartCount = document.getElementById('cart-count');
-            const cartTotal = document.getElementById('cart-total');
-            
-            cartItems.innerHTML = '';
-            let total = 0;
-
-            if (cart.length === 0) {
-                cartItems.innerHTML = '<p>Gaarigaaga waa eber.</p>';
-            } else {
-                cart.forEach((item, index) => {
-                    total += item.price;
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = 'cart-item';
-                    itemDiv.innerHTML = `
-                        <span>${item.name}</span>
-                        <span>$${item.price.toFixed(2)}</span>
-                    `;
-                    cartItems.appendChild(itemDiv);
-                });
-            }
-
-            cartCount.innerText = cart.length;
-            cartTotal.innerText = total.toFixed(2);
-        }
-
-        // Dhameystirka dalabka
-        function checkout() {
-            if(cart.length === 0) {
-                alert("Fadlan fadlan horta alaab ku dar gaariga!"); 
-                return;
-            }
-            alert("Mahadsanid! Dalabkaagii waa la diray. Waan kugala soo xiriiri doonaa WhatsApp-ka."); 
-            cart = [];
-            updateCart();
-        }
-
-        // Bilaabida dukaanka markii boggu soo rarto
-        renderProducts();
+        window.onload = displayProducts;
     </script>
 </body>
 </html>
