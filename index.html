@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dukaanka Quruxda & Daryeelka</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #faf3f5;
+        }
+        header {
+            background-color: #d81b60;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h1 {
+            margin: 0;
+        }
+        .cart-info {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .container {
+            display: flex;
+            padding: 2rem;
+            gap: 2rem;
+        }
+        .products {
+            flex: 3;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        .product-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .product-card img {
+            max-width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+        }
+        .btn {
+            background-color: #d81b60;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+        .btn:hover {
+            background-color: #ad1457;
+        }
+        .whatsapp-btn {
+            background-color: #25d366;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            padding: 10px 15px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            width: calc(100% - 30px);
+            margin-top: 15px;
+        }
+        .whatsapp-btn:hover {
+            background-color: #1ebe5d;
+        }
+        .sidebar {
+            flex: 1;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        .total {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 1rem;
+            text-align: right;
+        }
+        .checkout-btn {
+            background-color: #2ecc71;
+            margin-top: 15px;
+        }
+        .checkout-btn:hover {
+            background-color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Madaxa Bogga -->
+    <header>
+        <h1>Dukaanka Quruxda</h1>
+        <div class="cart-info">
+            Gaariga: <span id="cart-count">0</span>
+        </div>
+    </header>
+
+    <!-- Qaybta Weyn -->
+    <div class="container">
+        
+        <!-- Liiska Alaabta (Quruxda, Saliidaha & Shaambooyada) -->
+        <div class="products" id="products-list">
+            <!-- Halkan waxaa ka muuqan doona alaabta -->
+        </div>
+
+        <!-- Qaybta Gaariga Iibsiga & WhatsApp-ka -->
+        <div class="sidebar">
+            <h2>Gaariga Iibsiga</h2>
+            <div id="cart-items">
+                <p>Gaarigaaga waa eber.</p>
+            </div>
+            <div class="total">
+                Wadarta: $<span id="cart-total">0.00</span>
+            </div>
+            <button class="btn checkout-btn" onclick="checkout()">Iibso Hadda</button>
+            
+            <!-- Badhanka WhatsApp -->
+            <a href="https://wa.me/252689059804?text=Asc,%20waxaan%20rabaa%20inaan%20faahfaahin%20ka%20helno%20alaabtaada." class="whatsapp-btn" target="_blank">
+                💬 Nagala soo xiriir WhatsApp
+            </a>
+        </div>
+
+    </div>
+
+    <!-- JavaScript-ka Shaqeynaya Dukaanka -->
+    <script>
+        // Xogta Alaabta (Quruxda, Saliidaha iyo Shaambooyada)
+        const products = [
+            { id: 1, name: "Shaambo Dabiici ah", price: 12.00, img: "https://via.placeholder.com/150?text=Shampoo" },
+            { id: 2, name: "Saliid Timaha (Timir)", price: 18.00, img: "https://via.placeholder.com/150?text=Hair+Oil" },
+            { id: 3, name: "Saliid Qumbaha Asal ah", price: 15.00, img: "https://via.placeholder.com/150?text=Coconut+Oil" },
+            { id: 4, name: "Kariimka Wajiga (Qurux)", price: 22.00, img: "https://via.placeholder.com/150?text=Face+Cream" },
+            { id: 5, name: "Shaambo Qoyan oo Jilicsan", price: 10.00, img: "https://via.placeholder.com/150?text=Liquid+Shampoo" },
+            { id: 6, name: "Saliid Argan", price: 25.00, img: "https://via.placeholder.com/150?text=Argan+Oil" }
+        ];
+
+        let cart = [];
+
+        // Dhaqdhaqaaqa soo bandhigida alaabta
+        function renderProducts() {
+            const productsList = document.getElementById('products-list');
+            productsList.innerHTML = '';
+            
+            products.forEach(product => {
+                const productDiv = document.createElement('div');
+                productDiv.className = 'product-card';
+                productDiv.innerHTML = `
+                    <img src="${product.img}" alt="${product.name}">
+                    <h3>${product.name}</h3>
+                    <p>$${product.price.toFixed(2)}</p>
+                    <button class="btn" onclick="addToCart(${product.id})">Ku dar gaariga</button> 
+                `;
+                productsList.appendChild(productDiv);
+            });
+        }
+
+        // Ku darida alaabta gaariga
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            cart.push(product);
+            updateCart();
+        }
+
+        // Cusboonaysiinta gaariga
+        function updateCart() {
+            const cartItems = document.getElementById('cart-items');
+            const cartCount = document.getElementById('cart-count');
+            const cartTotal = document.getElementById('cart-total');
+            
+            cartItems.innerHTML = '';
+            let total = 0;
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p>Gaarigaaga waa eber.</p>';
+            } else {
+                cart.forEach((item, index) => {
+                    total += item.price;
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'cart-item';
+                    itemDiv.innerHTML = `
+                        <span>${item.name}</span>
+                        <span>$${item.price.toFixed(2)}</span>
+                    `;
+                    cartItems.appendChild(itemDiv);
+                });
+            }
+
+            cartCount.innerText = cart.length;
+            cartTotal.innerText = total.toFixed(2);
+        }
+
+        // Dhameystirka dalabka
+        function checkout() {
+            if(cart.length === 0) {
+                alert("Fadlan fadlan horta alaab ku dar gaariga!"); 
+                return;
+            }
+            alert("Mahadsanid! Dalabkaagii waa la diray. Waan kugala soo xiriiri doonaa WhatsApp-ka."); 
+            cart = [];
+            updateCart();
+        }
+
+        // Bilaabida dukaanka markii boggu soo rarto
+        renderProducts();
+    </script>
+</body>
+</html>
